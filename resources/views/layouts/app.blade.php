@@ -36,6 +36,15 @@
     <!-- Responsive css-->
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/responsive.css') }}">
     <style>
+        .action-icons {
+            display: flex;
+            align-items: center;
+        }
+
+        .action-icons i {
+            margin-right: 10px;
+        }
+
         .logo-wrapper {
             display: flex;
             align-items: center;
@@ -247,7 +256,22 @@
                 window.location.href = url;
             });
         });
+        $(document).ready(function() {
+            $("#search-button").click(function() {
+                var searchText = $("#search").val().trim().toLowerCase();
+
+                $("tbody tr").each(function() {
+                    var rowText = $(this).text().toLowerCase();
+                    if (rowText.includes(searchText)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+        });
     </script>
+
 </body>
 
 </html>

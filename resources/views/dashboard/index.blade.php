@@ -41,8 +41,9 @@
                                                 <li>
                                                     <label class="filters__form">
                                                         <input id="search" placeholder="Search for..." class="filters__name filters__input" />
+                                                        <input type="hidden" name="search" value="{{ $searchText }}">
                                                         <span class="filters__icon">
-                                                            <img src="{{ asset('assets/images/table/search.png') }}" alt="search" />
+                                                            <a href="#"><img src="{{ asset('assets/images/table/search.png') }}" alt="search" id="search-button" /></a>
                                                         </span>
                                                     </label>
                                                 </li>
@@ -90,9 +91,13 @@
                                                     <td>{{ number_format($item->hargabeli, 0, ',', '.') }}</td>
                                                     <td>{{ number_format($item->hargajual, 0, ',', '.') }}</td>
                                                     <td colspan="2">{{ $item->stokbarang }}</td>
-                                                    <td colspan="2">
-                                                        <i class="text-success" data-feather="edit"></i>
-                                                        <i class="text-danger" data-feather="trash"></i>
+                                                    <td colspan="2" class="action-icons">
+                                                        <a href="{{ route('edit-product', ['id' => $item->id]) }}"><i class="text-success" data-feather="edit"></i></a>
+                                                        <form action="{{ route('delete-product', ['id' => $item->id]) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus produk ini?')">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-link text-danger"><i class="text-danger" data-feather="trash"></i></button>
+                                                        </form>
                                                     </td>
                                                 </tr>
                                                 @endforeach

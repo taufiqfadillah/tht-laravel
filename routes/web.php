@@ -21,14 +21,23 @@ Route::middleware(['AuthUser', 'AuthJWT'])->group(function () {
 
     Route::get('/index', function (Request $request) {
         $sort = $request->input('sort', 'all');
+        $searchText = $request->input('search', '');
 
-        if ($sort === 'all') {
-            $produk = \App\Models\Produk::all();
+        if (empty($searchText)) {
+            if ($sort === 'all') {
+                $produk = \App\Models\Produk::paginate(11);
+            } else {
+                $produk = \App\Models\Produk::orderBy($sort)->paginate(11);
+            }
         } else {
-            $produk = \App\Models\Produk::orderBy($sort)->get();
+            if ($sort === 'all') {
+                $produk = \App\Models\Produk::where('namabarang', 'like', '%' . $searchText . '%')->paginate(11);
+            } else {
+                $produk = \App\Models\Produk::where('namabarang', 'like', '%' . $searchText . '%')->orderBy($sort)->paginate(11);
+            }
         }
 
-        return view('dashboard.index', compact('produk', 'sort'));
+        return view('dashboard.index', compact('produk', 'sort', 'searchText'));
     })->name('index');
 
 
@@ -36,8 +45,10 @@ Route::middleware(['AuthUser', 'AuthJWT'])->group(function () {
     Route::get('/add-product', function () {
         return view('dashboard.add-product');
     })->name('add-product');
-
     Route::post('/post-product', [ProdukController::class, 'store'])->name('post-product');
+    Route::get('/edit-product/{id}', [ProdukController::class, 'edit'])->name('edit-product');
+    Route::patch('/update-product/{id}', [ProdukController::class, 'update'])->name('update-product');
+    Route::delete('/delete-product/{id}', [ProdukController::class, 'delete'])->name('delete-product');
 
     Route::get('/user', function () {
         $user = Auth::user();
