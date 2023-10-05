@@ -27,12 +27,12 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/slick.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/slick-theme.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/scrollbar.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/jsgrid.css') }}">
     <!-- Plugins css Ends-->
     <!-- Bootstrap css-->
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendors/bootstrap.css') }}">
     <!-- App css-->
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/table.css') }}">
     <!-- Responsive css-->
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/responsive.css') }}">
     <style>
@@ -91,9 +91,39 @@
         #file-input {
             position: absolute;
             opacity: 0;
-            height: 100%;
             width: 100%;
             cursor: pointer;
+        }
+
+        /* upload produk */
+        .upload-container {
+            border-radius: 6px;
+        }
+
+        .border-container {
+            border: 5px dashed rgba(198, 198, 198, 0.65);
+            padding: 20px;
+        }
+
+        .border-container p {
+            color: #130f40;
+            font-weight: 600;
+            font-size: 1.1em;
+            letter-spacing: -1px;
+            margin-top: 30px;
+            margin-bottom: 0;
+            opacity: 0.65;
+        }
+
+        #file-browser {
+            text-decoration: none;
+            color: rgb(22, 42, 255);
+            border-bottom: 3px dotted rgba(22, 22, 255, 0.85);
+        }
+
+        #file-browser:hover {
+            color: rgb(0, 0, 255);
+            border-bottom: 3px dotted rgba(0, 0, 255, 0.85);
         }
     </style>
 </head>
@@ -141,9 +171,6 @@
     <script src="{{ asset('assets/js/slick/slick.min.js') }}"></script>
     <script src="{{ asset('assets/js/slick/slick.js') }}"></script>
     <script src="{{ asset('assets/js/header-slick.js') }}"></script>
-    <script src="{{asset('assets/js/jsgrid/jsgrid.min.js')}}"></script>
-    <script src="{{asset('assets/js/jsgrid/griddata.js')}}"></script>
-    <script src="{{asset('assets/js/jsgrid/jsgrid.js')}}"></script>
     <!-- Plugins JS Ends-->
 
     <!-- Theme js-->
@@ -174,6 +201,52 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
+    </script>
+    <script>
+        function handleFileSelect(input) {
+            const fileBrowser = document.getElementById('file-browser');
+            const previewImage = document.getElementById('preview-image');
+
+            if (input.files.length > 0) {
+                const file = input.files[0];
+                const fileName = file.name;
+
+                fileBrowser.textContent = fileName;
+
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    previewImage.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                previewImage.src = "{{ asset('assets/images/upload.png') }}";
+                fileBrowser.textContent = "disini";
+            }
+        }
+        document.getElementById('file-browser').addEventListener('click', function() {
+            document.getElementById('file-input').click();
+        });
+
+        function resetForm() {
+            document.getElementById('namabarang').value = '';
+            document.getElementById('hargabeli').value = '';
+            document.getElementById('hargajual').value = '';
+            document.getElementById('stokbarang').value = '';
+            document.getElementById('kategori').value = '';
+
+            document.getElementById('preview-image').src = "{{ asset('assets/images/upload.png') }}";
+
+            document.getElementById('file-browser').textContent = "disini";
+        }
+    </script>
+    <script>
+        $(document).ready(function() {
+            $("#sort").on("change", function() {
+                var selectedValue = $(this).val();
+                var url = "{{ route('index') }}?sort=" + selectedValue;
+                window.location.href = url;
+            });
+        });
     </script>
 </body>
 
